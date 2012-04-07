@@ -7,7 +7,7 @@ module ActiveModel::Validations::HelperMethods
       attributes = StripAttributes.narrow(record.attributes, options)
       attributes.each do |attr, value|
         if value.respond_to?(:strip)
-          record[attr] = (value.blank?) ? nil : value.strip
+          record[attr] = (value.blank?) ? nil : value.mb_chars.strip.normalize.strip.to_s
         end
       end
     end
