@@ -46,6 +46,17 @@ class ConservativePokerPlayer < ActiveRecord::Base
 end
 ```
 
+### Using `allow_blank`
+
+```ruby
+# allow blank column
+class ConservativePokerPlayer < ActiveRecord::Base
+  strip_attributes :allow_blank => true
+  # "" => nil (default)
+  # "" => ""  (:allow_blank => true)
+end
+``
+
 ## Usage Patterns
 
 ### Other ORMs implementing `ActiveModel`
