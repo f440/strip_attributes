@@ -32,6 +32,21 @@ class StripExceptThreeMockRecord < Tableless
   strip_attributes :except => [:foo, :bar, :biz]
 end
 
+class StripButAllowBlankMockRecord < Tableless
+  include MockAttributes
+  strip_attributes :allow_blank => true
+end
+
+class StripButAllowBlankAndExceptOneMockRecord < Tableless
+  include MockAttributes
+  strip_attributes :except => :foo, :allow_blank => true
+end
+
+class StripButAllowBlankAndOnlyOneMockRecord < Tableless
+  include MockAttributes
+  strip_attributes :only => :baz, :allow_blank => true
+end
+
 class StripAttributesTest < Test::Unit::TestCase
   def setup
     @init_params = { :foo => "\tfoo", :bar => "bar \t ", :biz => "\tbiz ", :baz => "", :bang => " ", :bop => "　" }
@@ -94,5 +109,38 @@ class StripAttributesTest < Test::Unit::TestCase
     assert_nil record.baz
     assert_nil record.bang
     assert_nil record.bop
+  end
+
+  def test_should_allow_blank
+    record = StripButAllowBlankMockRecord.new(@init_params)
+    record.valid?
+    assert_equal "foo", record.foo
+    assert_equal "bar", record.bar
+    assert_equal "biz", record.biz
+    assert_equal "",    record.baz
+    assert_equal "",   record.bang
+    assert_equal "",   record.bop
+  end
+
+  def test_should_strip_only_one_field_and_allow_blank
+    record = StripButAllowBlankAndOnlyOneMockRecord.new(@init_params)
+    record.valid?
+    assert_equal "\tfoo",     record.foo
+    assert_equal "bar \t ", record.bar
+    assert_equal "\tbiz ",  record.biz
+    assert_equal "",        record.baz
+    assert_equal " ",       record.bang
+    assert_equal "　",       record.bop
+  end
+
+  def test_should_strip_all_except_one_field_and_allow_blank
+    record = StripButAllowBlankAndExceptOneMockRecord.new(@init_params)
+    record.valid?
+    assert_equal "\tfoo", record.foo
+    assert_equal "bar",   record.bar
+    assert_equal "biz",   record.biz
+    assert_equal "",    record.baz
+    assert_equal "",   record.bang
+    assert_equal "",   record.bop
   end
 end
