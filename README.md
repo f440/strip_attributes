@@ -55,7 +55,7 @@ class ConservativePokerPlayer < ActiveRecord::Base
   # "" => nil (default)
   # "" => ""  (:allow_blank => true)
 end
-``
+```
 
 ## Usage Patterns
 
